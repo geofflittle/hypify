@@ -1,0 +1,327 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      "Hypify": {
+        "id": "Hypify",
+        "path": "Hypify",
+        "children": {
+          "NotifyMeTopic": {
+            "id": "NotifyMeTopic",
+            "path": "Hypify/NotifyMeTopic"
+          },
+          "HypifyClientId": {
+            "id": "HypifyClientId",
+            "path": "Hypify/HypifyClientId"
+          },
+          "HypifyClientSecret": {
+            "id": "HypifyClientSecret",
+            "path": "Hypify/HypifyClientSecret"
+          },
+          "SpotifyRefreshTokenSecret": {
+            "id": "SpotifyRefreshTokenSecret",
+            "path": "Hypify/SpotifyRefreshTokenSecret"
+          },
+          "CurrentPlaylistUpdaterScheduledFunction": {
+            "id": "CurrentPlaylistUpdaterScheduledFunction",
+            "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction",
+            "children": {
+              "CurrentPlaylistUpdaterRule": {
+                "id": "CurrentPlaylistUpdaterRule",
+                "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterRule",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterRule/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                      "aws:cdk:cloudformation:props": {
+                        "name": "CurrentPlaylistUpdaterRule",
+                        "scheduleExpression": "cron(0 10 ? * MON *)",
+                        "state": "ENABLED",
+                        "targets": [
+                          {
+                            "id": "Target0",
+                            "arn": {
+                              "Fn::GetAtt": [
+                                "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterFunction8BB5B429",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "CurrentPlaylistUpdaterFunction": {
+                "id": "CurrentPlaylistUpdaterFunction",
+                "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction",
+                "children": {
+                  "ServiceRole": {
+                    "id": "ServiceRole",
+                    "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/ServiceRole",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/ServiceRole/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                          "aws:cdk:cloudformation:props": {
+                            "assumeRolePolicyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Principal": {
+                                    "Service": "lambda.amazonaws.com"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "managedPolicyArns": [
+                              {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    "arn:",
+                                    {
+                                      "Ref": "AWS::Partition"
+                                    },
+                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                                  ]
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "DefaultPolicy": {
+                        "id": "DefaultPolicy",
+                        "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/ServiceRole/DefaultPolicy",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/ServiceRole/DefaultPolicy/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                              "aws:cdk:cloudformation:props": {
+                                "policyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": [
+                                        "secretsmanager:GetSecretValue",
+                                        "secretsmanager:DescribeSecret"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": "arn:aws:secretsmanager:us-east-1:778760699735:secret:HypifyClientId-nzcE8M"
+                                    },
+                                    {
+                                      "Action": [
+                                        "secretsmanager:GetSecretValue",
+                                        "secretsmanager:DescribeSecret"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": "arn:aws:secretsmanager:us-east-1:778760699735:secret:HypifyClientSecret-szN1SU"
+                                    },
+                                    {
+                                      "Action": [
+                                        "secretsmanager:GetSecretValue",
+                                        "secretsmanager:DescribeSecret"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": "arn:aws:secretsmanager:us-east-1:778760699735:secret:SpotifyRefreshToken-DQFFPG"
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                },
+                                "policyName": "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterFunctionServiceRoleDefaultPolicyBB55BCA5",
+                                "roles": [
+                                  {
+                                    "Ref": "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterFunctionServiceRoleD839D1F2"
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Code": {
+                    "id": "Code",
+                    "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/Code/Stage"
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/Code/AssetBucket"
+                      }
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": {
+                            "Ref": "AssetParameters8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4S3BucketB5FB033A"
+                          },
+                          "s3Key": {
+                            "Fn::Join": [
+                              "",
+                              [
+                                {
+                                  "Fn::Select": [
+                                    0,
+                                    {
+                                      "Fn::Split": [
+                                        "||",
+                                        {
+                                          "Ref": "AssetParameters8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4S3VersionKeyA76EE75F"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Fn::Select": [
+                                    1,
+                                    {
+                                      "Fn::Split": [
+                                        "||",
+                                        {
+                                          "Ref": "AssetParameters8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4S3VersionKeyA76EE75F"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        },
+                        "handler": "handlers/current-playlist-updater.handler",
+                        "role": {
+                          "Fn::GetAtt": [
+                            "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterFunctionServiceRoleD839D1F2",
+                            "Arn"
+                          ]
+                        },
+                        "runtime": "nodejs12.x",
+                        "environment": {
+                          "variables": {
+                            "USER_ID": "geoffslittle",
+                            "HYPIFY_CLIENT_ID_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:778760699735:secret:HypifyClientId-nzcE8M",
+                            "HYPIFY_CLIENT_SECRET_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:778760699735:secret:HypifyClientSecret-szN1SU",
+                            "SPOTIFY_REFRESH_TOKEN_SECRET_ARN": "arn:aws:secretsmanager:us-east-1:778760699735:secret:SpotifyRefreshToken-DQFFPG"
+                          }
+                        },
+                        "functionName": "CurrentPlaylistUpdaterFunction",
+                        "timeout": 900
+                      }
+                    }
+                  },
+                  "AllowEventRuleHypifyCurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterRuleBF89CAF4": {
+                    "id": "AllowEventRuleHypifyCurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterRuleBF89CAF4",
+                    "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterFunction/AllowEventRuleHypifyCurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterRuleBF89CAF4",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                      "aws:cdk:cloudformation:props": {
+                        "action": "lambda:InvokeFunction",
+                        "functionName": {
+                          "Fn::GetAtt": [
+                            "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterFunction8BB5B429",
+                            "Arn"
+                          ]
+                        },
+                        "principal": "events.amazonaws.com",
+                        "sourceArn": {
+                          "Fn::GetAtt": [
+                            "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterRule49FF01AF",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "CurrentPlaylistUpdaterAlarm": {
+                "id": "CurrentPlaylistUpdaterAlarm",
+                "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterAlarm",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Hypify/CurrentPlaylistUpdaterScheduledFunction/CurrentPlaylistUpdaterAlarm/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CloudWatch::Alarm",
+                      "aws:cdk:cloudformation:props": {
+                        "comparisonOperator": "GreaterThanOrEqualToThreshold",
+                        "evaluationPeriods": 1,
+                        "alarmActions": [
+                          "arn:aws:sns:us-east-1:778760699735:NotifyMe"
+                        ],
+                        "alarmName": "CurrentPlaylistUpdaterAlarm",
+                        "dimensions": [
+                          {
+                            "name": "FunctionName",
+                            "value": {
+                              "Ref": "CurrentPlaylistUpdaterScheduledFunctionCurrentPlaylistUpdaterFunction8BB5B429"
+                            }
+                          }
+                        ],
+                        "metricName": "Errors",
+                        "namespace": "AWS/Lambda",
+                        "period": 300,
+                        "statistic": "Sum",
+                        "threshold": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "AssetParameters": {
+            "id": "AssetParameters",
+            "path": "Hypify/AssetParameters",
+            "children": {
+              "8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4": {
+                "id": "8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4",
+                "path": "Hypify/AssetParameters/8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4",
+                "children": {
+                  "S3Bucket": {
+                    "id": "S3Bucket",
+                    "path": "Hypify/AssetParameters/8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4/S3Bucket"
+                  },
+                  "S3VersionKey": {
+                    "id": "S3VersionKey",
+                    "path": "Hypify/AssetParameters/8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4/S3VersionKey"
+                  },
+                  "ArtifactHash": {
+                    "id": "ArtifactHash",
+                    "path": "Hypify/AssetParameters/8fdfd7a43ae2d5d6bee0f40a1353165125a161675c4f72be9f0252c1ad0d1cf4/ArtifactHash"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
