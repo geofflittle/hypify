@@ -1,6 +1,8 @@
 import { Track, getLastWeeksTop50 } from "../clients/hypem-client"
 import {
     addItemsToPlaylist,
+    getAllCurrentUserPlaylists,
+    getCurrentUserPlaylists,
     getOrCreatePlaylist,
     getPlaylistItems,
     removeItemsFromPlaylist,
@@ -48,19 +50,30 @@ export const saveAndUpdateCurrentPlaylist = async ({
         playlistName: getDestinationPlaylistName()
     })
     await copyAndClearTracks(accessToken, srcPlaylist, dstPlaylist)
-    const top50 = await getLastWeeksTop50()
-    const top50TrackUris = await asyncReduce(
-        top50,
+
+    const hypemTop50 = await getLastWeeksTop50()
+    const hypemTop50TrackUris = await asyncReduce(
+        hypemTop50,
         async (acc: string[], cur: Track): Promise<string[]> => {
             const trackUri = await searchAndGetTrackUri(accessToken, cur.artist, cur.title)
             return acc.concat(trackUri ? [trackUri] : [])
         },
         []
     )
+
+    const dwPlaylist = (await getAllCurrentUserPlaylists({ accessToken })).find(
+        (playlist) => playlist.name == "Discover Weekly"
+    )
+    if (!dwPlaylist) {
+        throw new Error("No Discover Weekly playlist")
+    }
+    const dwpItems = await getPlaylistItems({ accessToken, playlistId: dwPlaylist.id })
+    const dwTrackUris = dwpItems.items.map((item) => item.track.uri)
+
     await addItemsToPlaylist({
         accessToken,
         playlistId: srcPlaylist.id,
-        trackUris: top50TrackUris
+        trackUris: hypemTop50TrackUris.concat(dwTrackUris)
     })
 }
 

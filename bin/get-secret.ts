@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 
-import { authorize, getAccessToken } from "../src/clients/spotify-client"
+import {
+    authorize,
+    getAccessToken,
+    getAllUserPlaylists,
+    getCurrentUserPlaylists,
+    getUserPlaylists
+} from "../src/clients/spotify-client"
 
 import http from "http"
+import { isTemplateExpression } from "typescript"
 import open from "open"
 
 const callbackRegEx = /^\/\?code=(\S+)$/
@@ -37,7 +44,7 @@ export const main = async (): Promise<void> => {
     const authorizeRes = await authorize({
         clientId,
         redirectUri,
-        scopes: ["playlist-modify-public"]
+        scopes: ["playlist-modify-public", "playlist-read-private"]
     })
     await open(authorizeRes.location)
     const code = await getCode()
