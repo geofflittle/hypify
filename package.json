@@ -34,7 +34,7 @@
         "typescript": "^3.9.7"
     },
     "dependencies": {
-        "got": "^11.5.1",
+        "got": "^11.8.5",
         "ts-core": "file:../ts-core"
     }
 }
